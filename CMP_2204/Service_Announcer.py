@@ -12,7 +12,7 @@ def announcing(ip,dict_to_json):
         UDPAnnouncerSocket.setsockopt(socket.SOL_SOCKET,socket.SO_BROADCAST,1)
         UDPAnnouncerSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     except socket.error as e:
-        print ("Caught exception socket.error : %s" % e)
+        print("Caught exception socket.error : %s" % e)
     message = json.dumps(dict_to_json).encode()
     while True:
         UDPAnnouncerSocket.sendto(message,('<broadcast>',5000))
