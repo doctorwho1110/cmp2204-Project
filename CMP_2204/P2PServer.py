@@ -1,5 +1,7 @@
 import os
 import math
+import socket
+
 
 def divide_into_chunks(file, fileName, directory):
     if not os.path.exists(directory):
@@ -15,3 +17,8 @@ def divide_into_chunks(file, fileName, directory):
                 div.write(divided_file)
             cnt += 1
             divided_file = infile.read(int(CHUNK_SIZE))
+
+    user_file = input("Which file do you want to host ? ")
+
+
+    divide_into_chunks(user_file,)
