@@ -6,7 +6,6 @@ import datetime
 import math
 import socket
 
-
 <<<<<<< HEAD
 def divide_into_chunks(file, fileName, directory):
     if not os.path.exists(directory):
