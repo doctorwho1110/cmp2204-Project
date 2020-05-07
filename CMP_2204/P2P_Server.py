@@ -4,7 +4,29 @@ import os
 import json
 import datetime
 import math
+import socket
 
+<<<<<<< HEAD
+def divide_into_chunks(file, fileName, directory):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    c = os.path.getsize(file)
+    CHUNK_SIZE = math.ceil(math.ceil(c) / 5)
+    cnt = 1
+    with open(file, 'rb') as infile:
+        divided_file = infile.read(int(CHUNK_SIZE))
+        while divided_file:
+            name = directory + "/" + fileName.split('.')[0] + "" + str(cnt)
+            with open(name, 'wb+') as div:
+                div.write(divided_file)
+            cnt += 1
+            divided_file = infile.read(int(CHUNK_SIZE))
+
+    user_file = input("Which file do you want to host ? ")
+
+
+    divide_into_chunks(user_file,)
+=======
 class Server:
     def __init__(self):
         self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -68,3 +90,4 @@ class Server:
                 divided_file = infile.read(int(CHUNK_SIZE))
 
 server = Server()
+>>>>>>> 3a3e31b76c383e995fe5c110bae01fd547b602d7
