@@ -2,7 +2,6 @@ import socket
 import threading
 import os
 import json
-import datetime
 import math
 import socket
 
@@ -55,21 +54,21 @@ class Server:
                 filename = "p2pfiles/" + json.loads(filename.decode())["files"] # İsim ataması
                 print("Files received ...")
                 c.send("EXISTS" + str(os.path.getsize(filename))) #Dosyanı  bulunduğuna dair kullanıcıya mesaj yolla
-                userResponse = c.recv(1024) # Kullanıcının mesajını al
-                if userResponse[:2] == 'OK':
-                    with open(filename, "rb") as fn: #filename adında bir dosya aç
-                        bytesToSend = fn.read(os.path.getsize(filename))
-                        CHUNK_SIZE=math.ceil(math.ceil(bytesToSend) / 5)
-                        #c.send(bytesToSend)
-                        cnt = 1
+
+                with open(filename, "rb") as fn:  # filename adında bir dosya aç
+                    bytesToSend = fn.read(os.path.getsize(filename))
+                    CHUNK_SIZE = math.ceil(math.ceil(bytesToSend) / 5)
+                    # c.send(bytesToSend)
+                    cnt = 1
+                    divided_file = fn.read(int(CHUNK_SIZE))
+                    while divided_file:
+                        name = directory + "/" + fileName.split('.')[0] + "" + str(cnt)  # Hatalı olabilir
+                        with open(name, 'wb+') as div:
+                            div.write(divided_file)
+                        cnt += 1
                         divided_file = fn.read(int(CHUNK_SIZE))
-                        while divided_file:
-                            name = directory + "/" + fileName.split('.')[0] + "" + str(cnt)  # Hatalı olabilir
-                            with open(name, 'wb+') as div:
-                                div.write(divided_file)
-                            cnt += 1
-                            divided_file = fn.read(int(CHUNK_SIZE))
-            break
+
+                    break
         c.shutdown(socket.SHUT_RDWR)
         c.close()
 
