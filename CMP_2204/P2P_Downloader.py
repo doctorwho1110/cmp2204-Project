@@ -5,6 +5,46 @@ import datetime
 import platform
 
 
+def socket(ip):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect((ip, 5001))
+
+
+def create_file(chunk, data, message, ip):
+    if len(data) == 0:
+        with open("client.txt", "a") as log:
+            current_time = datetime.datetime.now().strftime("%H:%M:%S %d-%m-%Y")
+            log.write(current_time + "," + ip + "," + message + "\n")
+        chunk.close()
+
+
+def writing_data(s, count, msg, ipaddress):
+    s.send(json.dumps({"filename": msg}).encode())
+    chunk = open(msg, "wb")
+    while True:
+        data = s.recv(4096)
+        chunk.write(data)
+        # subprocess.run("clear" if platform.system() != "Windows" else "cls")
+        # Windowsta problem cikardigi icin de aktive edilmistir
+        # Unix-Like sistemlerde aktif hale getirebilir (stabil degil)
+        print("[" + str(count) + "/5]" + msg[:-2] + " is downloading.")
+        print("Download is complete!")
+        create_file(chunk, data, msg, ipaddress)
+        break
+        return True
+
+
+def client(ipAddress, message, count):
+    socket(ipAddress)
+    try:
+        writing_data(socket.s, count, message, ipAddress)
+    except:
+        print("Error on download from " + ipAddress)
+        return False
+    finally:
+        socket.sock.close()
+
+
 def main():
     while True:
         some = {}
@@ -36,34 +76,6 @@ def main():
                 for i in range(1, 6):
                     with open(inp + "_" + str(i), "rb") as infile:
                         outfile.write(infile.read())
-
-
-def client(ipAddress, message, count):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect((ipAddress, 5001))
-    try:
-        sock.send(json.dumps({"filename": message}).encode())
-        chunk = open(message, "wb")
-        while True:
-            data = sock.recv(4096)
-            chunk.write(data)
-            # subprocess.run("clear" if platform.system() != "Windows" else "cls")
-            # Windowsta problem cikardigii icin de aktive edilmistir
-            # Unix-Like sistemlerde aktif hale getirebilir (stabil degil)
-            print("[" + str(count) + "/5]" + message[:-2] + " is downloading.")
-            print("Download is complate!")
-            if len(data) == 0:
-                with open("client.txt", "a") as log:
-                    curr_time = datetime.datetime.now().strftime("%H:%M:%S %d-%m-%Y")
-                    log.write(curr_time + "," + ipAddress + "," + message + "\n")
-                chunk.close()
-                break
-        return True
-    except:
-        print("Error on download from " + ipAddress)
-        return False
-    finally:
-        sock.close()
 
 
 if __name__ == "__main__":

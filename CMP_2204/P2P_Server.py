@@ -39,9 +39,9 @@ def create_file(fileName, connection, ClientInfo):
 def handleSend(connection, clientInfo):
     try:
         while True:
-            c = connection.recv(4096)
-            if c:
-                fileName = "files/" + json.loads(c.decode())["filename"]
+            d = connection.recv(4096)
+            if d:
+                fileName = "files/" + json.loads(d.decode())["filename"]
                 create_file(fileName, connection, clientInfo)
                 break
             else:
@@ -51,7 +51,7 @@ def handleSend(connection, clientInfo):
     finally:
         connection.close()
 
-if __name__ == '__main__':
+if __name__ == ' _main_ ':
     if not os.path.exists('files'):
         os.makedirs('files')
     print("P2P Server Starting.." + "\n")
