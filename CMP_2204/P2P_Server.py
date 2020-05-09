@@ -1,78 +1,73 @@
-import socket
-import threading
-import os
+import datetime
 import json
+import os
 import math
 import socket
+import threading
 
-class Server:
+def socket(ip):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind((ip, 5001))
+    sock.listen(10)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind((ip, 5001))
+    sock.listen(10)
 
-    def __init__(self):
-        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.accept_connections()
+def server():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("1.1.1.1", 1))  # erişilmesine gerek yok ip tespiti için.
+    ip = s.getsockname()[0]  # for hamachi update this line ip = "25.147.229.97" with your hamachi ipv4
+    s.close()
+    print("Listening from " + ip)
+    socket(ip)
+    while True:
+        connection, clientInfo = socket.sock.accept()
+        thread = threading.Thread(target=handleSend, args=(connection, clientInfo))
+        thread.start()
 
-    def accept_connections(self):
-        ip = socket.gethostbyname(socket.gethostname())
-        port = 5001
+def create_file(fileName, connection, ClientInfo):
+    with open(fileName, "rb") as f:
+        connection.send(f.read(os.path.getsize(fileName)))
+        log_file = open("server.txt", "a")
+        current_time = datetime.datetime.now().strftime("%H:%M:%S %d-%m-%Y")
+        log_file.write(
+            current_time
+            + "," + ClientInfo[0] + "," + fileName + "\n"
+        )
+        log_file.close()
 
-        self.s.bind((ip, port))
-        self.s.listen(10)
-
-        print('Running on IP: ' + ip)
-        print('Running on port: ' + str(port))
-
-        while 1:
-            c, addr = self.s.accept()
-            print("Got connection from", addr)
-            print(c)
-
-            threading.Thread(target=self.handle_client, args=(c, addr,)).start()
-
-    def  divide_into_chunks(self, file, fileName, directory):
-        '''if not os.path.exists(directory):
-            os.makedirs(directory)'''
-        c = os.path.getsize(file)
-        CHUNK_SIZE = math.ceil(math.ceil(c) / 5)
-        cnt = 1
-        with open(file, 'rb') as infile:
-            divided_file = infile.read(int(CHUNK_SIZE))
-            while divided_file:
-                name = directory + "/" + fileName.split('.')[0] + "" + str(cnt)
-                with open(name, 'wb+') as div:
-                    div.write(divided_file)
-                cnt += 1
-                divided_file = infile.read(int(CHUNK_SIZE))
-
-    def handle_client(self, c, addr,fileName,directory):
-
+def handleSend(connection, clientInfo):
+    try:
         while True:
-            filename = c.recv(4096)
-            if not os.path.exists(filename): #Filename dosyası osde yoksa
-                c.send("File does not exist".encode())  # Mesajı gönder
-                os.makedirs(directory)
+            c = connection.recv(4096)
+            if c:
+                fileName = "files/" + json.loads(c.decode())["filename"]
+                create_file(fileName, connection, clientInfo)
+                break
             else:
-                filename = "p2pfiles/" + json.loads(filename.decode())["files"] # İsim ataması
-                print("Files received ...")
-                c.send("EXISTS" + str(os.path.getsize(filename))) #Dosyanı  bulunduğuna dair kullanıcıya mesaj yolla
+                break
+    except:
+        print("Error Occurred")
+    finally:
+        connection.close()
 
-                with open(filename, "rb") as fn:  # filename adında bir dosya aç
-                    bytesToSend = fn.read(os.path.getsize(filename))
-                    CHUNK_SIZE = math.ceil(math.ceil(bytesToSend) / 5)
-                    # c.send(bytesToSend)
-                    cnt = 1
-                    divided_file = fn.read(int(CHUNK_SIZE))
-                    while divided_file:
-                        name = directory + "/" + fileName.split('.')[0] + "" + str(cnt)  # Hatalı olabilir
-                        with open(name, 'wb+') as div:
-                            div.write(divided_file)
-                        cnt += 1
-                        divided_file = fn.read(int(CHUNK_SIZE))
-
-                    break
-        c.shutdown(socket.SHUT_RDWR)
-        c.close()
-
-
-
-
-server = Server()
+if __name__ == '__main__':
+    if not os.path.exists('files'):
+        os.makedirs('files')
+    print("P2P Server Starting.." + "\n")
+    print("The file to be shared and the project must be in the same folder")
+    fileName = input("Enter file name : ")
+    c = os.path.getsize(fileName)
+    CHUNK_SIZE = math.ceil(math.ceil(c) / 5)
+    index = 1
+    with open(fileName, 'rb') as infile:
+        chunk = infile.read(int(CHUNK_SIZE))
+        while chunk:
+            chunkname = "files/" + fileName + '_' + str(index)
+            with open(chunkname, 'wb+') as chunk_file:
+                chunk_file.write(chunk)
+            index += 1
+            chunk = infile.read(int(CHUNK_SIZE))
+    chunk_file.close()
+    print("Files are ready to share")
+    server()
