@@ -6,12 +6,12 @@ import socket
 import threading
 
 def socket(ip):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind((ip, 5001))
-    sock.listen(10)
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind((ip, 5001))
-    sock.listen(10)
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        ip = s.gethostbyname(socket.gethostname())
+        port = 5001
+        s.bind((ip, port))
+        s.listen(10)
+        print('Running on IP: ' + ip)
 
 def server():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -21,7 +21,7 @@ def server():
     print("Listening from " + ip)
     socket(ip)
     while True:
-        connection, clientInfo = socket.sock.accept()
+        connection, clientInfo = s.sock.accept()
         thread = threading.Thread(target=handleSend, args=(connection, clientInfo))
         thread.start()
 
