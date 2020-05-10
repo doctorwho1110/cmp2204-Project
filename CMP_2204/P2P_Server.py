@@ -5,6 +5,7 @@ import math
 import socket
 import threading
 
+
 def socket(ip):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         ip = s.gethostbyname(socket.gethostname())
@@ -12,6 +13,7 @@ def socket(ip):
         s.bind((ip, port))
         s.listen(10)
         print('Running on IP: ' + ip)
+
 
 def server():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -21,20 +23,22 @@ def server():
     print("Listening from " + ip)
     socket(ip)
     while True:
-        connection, clientInfo = s.sock.accept()
+        connection, clientInfo = s.accept()
         thread = threading.Thread(target=handleSend, args=(connection, clientInfo))
         thread.start()
 
-def create_file(fileName, connection, ClientInfo):
+
+def create_file(fileName, connection, clientInfo):
     with open(fileName, "rb") as f:
         connection.send(f.read(os.path.getsize(fileName)))
         log_file = open("server.txt", "a")
         current_time = datetime.datetime.now().strftime("%H:%M:%S %d-%m-%Y")
         log_file.write(
             current_time
-            + "," + ClientInfo[0] + "," + fileName + "\n"
+            + "," + clientInfo[0] + "," + fileName + "\n"
         )
         log_file.close()
+
 
 def handleSend(connection, clientInfo):
     try:
@@ -51,7 +55,8 @@ def handleSend(connection, clientInfo):
     finally:
         connection.close()
 
-if __name__ == ' _main_ ':
+
+if __name__ == '__main__':
     if not os.path.exists('files'):
         os.makedirs('files')
     print("P2P Server Starting.." + "\n")

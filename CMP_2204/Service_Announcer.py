@@ -27,8 +27,8 @@ def main():
     MyIp = "{}.{}.{}.255'".format(MyIp[0],MyIp[1],MyIp[2])
     AnnouncerSocket.close()
     username = input("Please enter a Username: ")
-    directoryOfFiles = "./p2pfiles/"
-    usersInformation_Json = {"username":username,"files":[f for f in os.listdir(directoryOfFiles) if isfile(join(directoryOfFiles,f))]}
+    directoryOfFiles = "./files/"
+    usersInformation_Json = {"username": username, "files": [f for f in os.listdir(directoryOfFiles) if isfile(join(directoryOfFiles,f))]}
     announcing(MyIp,usersInformation_Json)
 
 if __name__ == "__main__":
