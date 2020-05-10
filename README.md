@@ -1,9 +1,6 @@
 # cmp2204-Project
-CMP2204 Project
-
 
 Please Read Carefully
-
 
 To Run The Program:
 1) use python3 P2P_Server.py to start our Server.
@@ -31,17 +28,17 @@ to work with client.
 2) # Fixed
 
 3)If you test the program with same PC.Then
-Change -> 14. Line of Service_Listener with if ip == get_my_ip():
+Change -> 47. Line of Service_Listener with if ip == get_my_ip():
 
 4)You can see the download history in client.txt
 
-5)If you use Unix-Like system you can active 50. Line in P2P_Downloader.py
+5)If you use Unix-Like system you can active 27. Line in P2P_Downloader.py
 
 6)If you will try to test the program with Hamachi you need to hardcode your Hamachi ip
 To do is:
-  6.1) P2P_Server.py update 12. Line with ip = "your_hamachi_ip"
-  6.2) Service_Listener.py update 32. Line with IP = "your_hamachi_ip"
-  6.3) Service_Announcer.py update 11. Line with IP= "your_hamachi_ip" and
+  6.1) P2P_Server.py update 21. Line with ip = "your_hamachi_ip"
+  6.2) Service_Listener.py update 13. Line with ip = "your_hamachi_ip"
+  6.3) Service_Announcer.py update 26. Line with MyIP= "your_hamachi_ip" and
 	last line should be
 	hamachi_ip = "25.255.255.255" -> You will create
    	announce(hamachi_ip, json_dictionary) -> update the last line like this
