@@ -5,7 +5,7 @@ import datetime
 import platform
 
 
-def socket(ip):
+def start_socket(ip):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((ip, 5001))
 
@@ -35,14 +35,14 @@ def writing_data(s, count, msg, ipaddress):
 
 
 def client(ipAddress, message, count):
-    socket(ipAddress)
+    start_socket(ipAddress)
     try:
         writing_data(socket.s, count, message, ipAddress)
     except:
         print("Error on download from " + ipAddress)
         return False
     finally:
-        socket.sock.close()
+        socket.socket.close()
 
 
 def main():
