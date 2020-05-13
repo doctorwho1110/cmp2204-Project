@@ -5,25 +5,28 @@ import math
 import socket
 import threading
 
-
-def socket(ip):
+'''
+def start_socket(ip):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        ip = s.gethostbyname(socket.gethostname())
+        ip = socket.gethostbyname(socket.gethostname())
         port = 5001
         s.bind((ip, port))
         s.listen(10)
         print('Running on IP: ' + ip)
-
+'''
 
 def server():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(("1.1.1.1", 1))  # erişilmesine gerek yok ip tespiti için.
     ip = s.getsockname()[0]  # for hamachi update this line ip = "25.147.229.97" with your hamachi ipv4
     s.close()
+    print("\n" + "P2P Server Started!")
     print("Listening from " + ip)
-    socket(ip)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind((ip, 5001))
+    sock.listen(10)
     while True:
-        connection, clientInfo = s.accept()
+        connection, clientInfo = sock.accept()
         thread = threading.Thread(target=handleSend, args=(connection, clientInfo))
         thread.start()
 
